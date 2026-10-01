@@ -6,7 +6,8 @@ strict is what makes the tool easy to test and extend.
 ```
 src/ravenkit/
 ├── cli.py       # presentation: parse args, call logic, render, exit
-└── dataset.py   # pure logic: no printing, no CLI knowledge
+├── dataset.py   # pure logic: no printing, no CLI knowledge
+└── deps.py      # optional-dependency detection: pure, prints nothing
 ```
 
 ## The layering rule
@@ -73,6 +74,21 @@ Anything that is *computable* belongs in `dataset.py`; anything that is
 - **`find_duplicates`** — buckets files by size, then hashes only buckets with
   more than one member (BLAKE2b, 128-bit, streamed in 1 MiB chunks). Size is a
   free pre-filter: files of different sizes can never be identical.
+
+## Optional dependencies
+
+`deps.py` answers one question: *can this extra's dependencies be imported?* It
+holds a registry (extra name → the modules and pip packages that extra needs)
+and renders the message shown when something is absent.
+
+It installs nothing. Installation stays the user's decision; the tool only says
+which packages are missing and the exact command to add them. Keeping detection
+here rather than in `cli.py` means the message text is unit-tested instead of
+eyeballed, and a command that needs an extra becomes a one-line `_require(...)`
+call.
+
+Two names matter and they are frequently different — the importable module
+(`PIL`) and the pip package (`Pillow`) — which is why the registry stores both.
 
 ## Why it is shaped this way
 

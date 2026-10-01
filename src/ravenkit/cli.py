@@ -9,6 +9,7 @@ from pathlib import Path
 
 import typer
 from rich.console import Console
+from rich.markup import escape
 from rich.table import Table
 from rich.tree import Tree
 
@@ -25,6 +26,7 @@ from .dataset import (
     parse_size,
     scan_dataset,
 )
+from .deps import missing, render_missing
 
 console = Console()
 error_console = Console(stderr=True)
@@ -76,8 +78,20 @@ def _share_bar(count: int, total: int) -> str:
 
 
 def _fail(message: str, code: int = 1) -> None:
-    error_console.print(f"[red]error:[/red] {message}")
+    # Escaped: messages carry user-facing text such as `ravenkit[images]`, and
+    # rich would otherwise eat the bracketed part as a style tag.
+    error_console.print(f"[red]error:[/red] {escape(message)}")
     raise typer.Exit(code)
+
+
+def _require(extra: str, command: str) -> None:
+    """Fail with an install hint when *extra*'s optional dependencies are missing.
+
+    Never installs anything: the user is told which packages to add and how.
+    """
+    gaps = missing(extra)
+    if gaps:
+        _fail(render_missing(extra, gaps, command))
 
 
 # --------------------------------------------------------------------------- #

@@ -63,6 +63,43 @@ fixes layout. Run both before committing.
 5. **Verify.** `ruff format . && ruff check . && pytest`, then run the command
    by hand once.
 
+## Adding an optional dependency
+
+Heavy or niche dependencies must not be forced on everyone. Declare them as an
+**extra** and let the user opt in.
+
+1. Declare the extra in `pyproject.toml`:
+
+   ```toml
+   [project.optional-dependencies]
+   images = ["Pillow>=10.0"]
+   ```
+
+2. Register it in `src/ravenkit/deps.py`, so the CLI can detect its absence.
+   Store both names — the importable module and the pip package are often
+   different:
+
+   ```python
+   EXTRA_MODULES = {
+       "images": (Requirement("PIL", "Pillow"),),
+   }
+   ```
+
+3. Guard the command in `cli.py`:
+
+   ```python
+   @app.command()
+   def validate(path: Path = typer.Argument(Path("."))) -> None:
+       _require("images", "raven validate")
+       ...
+   ```
+
+   A missing dependency now exits 1 with the package list and both install
+   commands, instead of an `ImportError` traceback. `ravenkit` never installs
+   anything itself.
+
+4. Document the extra in `docs/commands.md` if it changes a command's options.
+
 ## Conventions checklist
 
 - Target Python 3.10+; use modern syntax (`list[str]`, `str | None`).

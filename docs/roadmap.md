@@ -19,6 +19,11 @@ gets its own design pass.
 `RAW_EXTENSIONS` in `dataset.py` already lists camera raw formats in
 anticipation of `validate` and `stats`; nothing consumes it yet.
 
+Optional dependencies follow the same pattern: they will be declared as extras in
+`pyproject.toml`, and `src/ravenkit/deps.py` holds the registry that turns a
+missing extra into an "install this" message. Nothing is ever installed
+automatically. The registry is empty until the first real dependency lands.
+
 ### Explicitly out of scope
 
 - **Destructive deduplication** (`duplicates --delete`). Reporting is safe;
