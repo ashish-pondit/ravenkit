@@ -1,4 +1,4 @@
-"""Allow running the toolbox with ``python -m pyutils``."""
+"""Allow running the toolbox with ``python -m ravenkit``."""
 
 from __future__ import annotations
 

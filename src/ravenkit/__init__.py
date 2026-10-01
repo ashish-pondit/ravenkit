@@ -1,4 +1,4 @@
-"""pyutils - small CLI helpers for everyday dataset and folder chores."""
+"""ravenkit - dataset-inspection CLIs: files, sizes, formats and folders."""
 
 from __future__ import annotations
 

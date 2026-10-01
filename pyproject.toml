@@ -3,12 +3,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pyutils"
+name = "ravenkit"
 version = "0.1.0"
-description = "Small, dependency-light CLI helpers for everyday dataset and folder chores."
+description = "Dataset-inspection CLIs: files, sizes, formats and folders."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["cli", "dataset", "images", "utility"]
 dependencies = [
     "typer>=0.12",
@@ -22,10 +23,10 @@ dev = [
 ]
 
 [project.scripts]
-pyutils = "pyutils.cli:main"
+raven = "ravenkit.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pyutils"]
+packages = ["src/ravenkit"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

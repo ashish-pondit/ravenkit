@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from pyutils.dataset import (
+from ravenkit.dataset import (
     build_tree,
     find_duplicates,
     human_size,

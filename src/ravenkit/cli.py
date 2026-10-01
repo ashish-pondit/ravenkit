@@ -1,6 +1,6 @@
-"""Command line interface for the ``pyutils`` toolbox.
+"""Command line interface for the ``ravenkit`` toolbox.
 
-Run ``pyutils --help`` or ``pyutils dataset --help`` for details.
+Run ``raven --help`` for details.
 """
 
 from __future__ import annotations
@@ -33,14 +33,8 @@ app = typer.Typer(
     add_completion=False,
     no_args_is_help=True,
     rich_markup_mode="rich",
-    help="Everyday CLI helpers for datasets and folders.",
+    help="Dataset-inspection CLIs: files, sizes, formats and folders.",
 )
-
-dataset_app = typer.Typer(
-    no_args_is_help=True,
-    help="Explore a folder: counts, sizes, structure and duplicates.",
-)
-app.add_typer(dataset_app, name="dataset")
 
 
 # --------------------------------------------------------------------------- #
@@ -48,7 +42,7 @@ app.add_typer(dataset_app, name="dataset")
 # --------------------------------------------------------------------------- #
 def _version_callback(value: bool) -> None:
     if value:
-        console.print(f"pyutils {__version__}")
+        console.print(f"raven {__version__}")
         raise typer.Exit()
 
 
@@ -100,13 +94,13 @@ def root(
         help="Show the version and exit.",
     ),
 ) -> None:
-    """Everyday CLI helpers for datasets and folders."""
+    """Dataset-inspection CLIs for folders and datasets."""
 
 
 # --------------------------------------------------------------------------- #
 # dataset summary
 # --------------------------------------------------------------------------- #
-@dataset_app.command()
+@app.command()
 def summary(
     path: Path = typer.Argument(Path("."), help="Folder to inspect."),
     top: int = typer.Option(10, "--top", "-n", min=1, help="Rows per table."),
@@ -175,18 +169,16 @@ def _render_summary(data: DatasetSummary, top: int) -> None:
 # --------------------------------------------------------------------------- #
 # dataset tree
 # --------------------------------------------------------------------------- #
-@dataset_app.command()
+@app.command()
 def tree(
     path: Path = typer.Argument(Path("."), help="Folder to display."),
     depth: int = typer.Option(3, "--depth", "-d", min=1, help="How many levels to expand."),
-    ext: str | None = typer.Option(None, "--ext", "-e", help='Comma separated filter.'),
+    ext: str | None = typer.Option(None, "--ext", "-e", help="Comma separated filter."),
     images_only: bool = typer.Option(False, "--images-only", help="Only count image files."),
 ) -> None:
     """Show the folder structure with per-folder file counts and sizes."""
     root_path = _resolve_dir(path)
-    node = build_tree(
-        root_path, max_depth=depth, extensions=_extensions_from(ext, images_only)
-    )
+    node = build_tree(root_path, max_depth=depth, extensions=_extensions_from(ext, images_only))
 
     label = f"[bold]{node.name}[/bold] [dim]({node.files:,} files, {human_size(node.size)})[/dim]"
     rich_tree = Tree(label)
@@ -210,10 +202,10 @@ def _add_children(parent: Tree, node: DirNode) -> None:
 # --------------------------------------------------------------------------- #
 # dataset files
 # --------------------------------------------------------------------------- #
-@dataset_app.command()
+@app.command()
 def files(
     path: Path = typer.Argument(Path("."), help="Folder to search."),
-    ext: str | None = typer.Option(None, "--ext", "-e", help='Comma separated filter.'),
+    ext: str | None = typer.Option(None, "--ext", "-e", help="Comma separated filter."),
     images_only: bool = typer.Option(False, "--images-only", help="Only image files."),
     min_size: str | None = typer.Option(None, "--min-size", help='e.g. "500kb" or "2MB".'),
     limit: int = typer.Option(25, "--limit", "-l", min=1, help="Max rows to print."),
@@ -252,8 +244,7 @@ def files(
 
     total = sum(size for _, size in collected)
     console.print(
-        f"\n[bold]{len(collected):,}[/bold] file(s), {human_size(total)} "
-        f"in {root_path}\n"
+        f"\n[bold]{len(collected):,}[/bold] file(s), {human_size(total)} in {root_path}\n"
     )
 
     table = Table(box=None, header_style="bold", padding=(0, 2, 0, 0))
@@ -276,10 +267,10 @@ def files(
 # --------------------------------------------------------------------------- #
 # dataset duplicates
 # --------------------------------------------------------------------------- #
-@dataset_app.command()
+@app.command()
 def duplicates(
     path: Path = typer.Argument(Path("."), help="Folder to scan."),
-    ext: str | None = typer.Option(None, "--ext", "-e", help='Comma separated filter.'),
+    ext: str | None = typer.Option(None, "--ext", "-e", help="Comma separated filter."),
     images_only: bool = typer.Option(False, "--images-only", help="Only image files."),
     limit: int = typer.Option(20, "--limit", "-l", min=1, help="Max groups to print."),
 ) -> None:

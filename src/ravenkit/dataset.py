@@ -68,8 +68,17 @@ def human_size(num_bytes: float) -> str:
     return f"{value:.1f} PB"  # pragma: no cover - unreachable guard
 
 
-_SIZE_UNITS = {"b": 1, "k": 1024, "kb": 1024, "m": 1024**2, "mb": 1024**2,
-               "g": 1024**3, "gb": 1024**3, "t": 1024**4, "tb": 1024**4}
+_SIZE_UNITS = {
+    "b": 1,
+    "k": 1024,
+    "kb": 1024,
+    "m": 1024**2,
+    "mb": 1024**2,
+    "g": 1024**3,
+    "gb": 1024**3,
+    "t": 1024**4,
+    "tb": 1024**4,
+}
 
 
 def parse_size(text: str) -> int:
@@ -83,7 +92,7 @@ def parse_size(text: str) -> int:
             digits += char
         else:
             break
-    suffix = cleaned[len(digits):]
+    suffix = cleaned[len(digits) :]
     if not digits:
         raise ValueError(f"invalid size: {text!r}")
     if not suffix:
