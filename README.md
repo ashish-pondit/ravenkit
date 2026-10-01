@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/Ravenkit%20Utility%20Tools%20Logo.png" alt="ravenkit logo — a raven carrying utility tags" width="260">
+</p>
+
 # ravenkit
 
 Dataset-inspection CLIs for the terminal: count files, measure sizes, break down
