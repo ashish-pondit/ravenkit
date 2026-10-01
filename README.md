@@ -1,12 +1,16 @@
-# pyutils
+# ravenkit
 
-Small, dependency-light CLI helpers for everyday dataset and folder chores.
+Dataset-inspection CLIs for the terminal: count files, measure sizes, break down
+formats and find duplicates in a folder tree. Works on any directory; built with
+image datasets in mind.
 
 ```bash
-pyutils dataset summary ~/data/mydataset
+raven summary ~/data/mydataset
 ```
 
 ## Install
+
+Not yet published to PyPI — install from a checkout:
 
 ```bash
 pip install -e ".[dev]"
@@ -14,61 +18,30 @@ pip install -e ".[dev]"
 
 ## Commands
 
-### `pyutils dataset summary [PATH]`
-
-Counts folders, files, images, total size, per-extension breakdown and the largest files.
-
-```bash
-pyutils dataset summary ./data --top 15
-pyutils dataset summary ./data --images-only
-pyutils dataset summary ./data --ext "jpg,png,webp"
-```
-
-### `pyutils dataset tree [PATH]`
-
-Prints the folder structure with recursive file counts and sizes per folder.
-
-```bash
-pyutils dataset tree ./data --depth 2
-pyutils dataset tree ./data --images-only
-```
-
-### `pyutils dataset files [PATH]`
-
-Lists files matching filters, biggest first.
-
-```bash
-pyutils dataset files ./data --images-only --min-size 2MB --limit 50
-pyutils dataset files ./data --ext jpg --sort name
-```
-
-### `pyutils dataset duplicates [PATH]`
-
-Finds files with identical content (size pre-filter, then BLAKE2b hash) and reports
-how much space could be recovered.
-
-```bash
-pyutils dataset duplicates ./data --images-only
-```
-
-## Development
-
-```bash
-pytest            # run tests
-ruff check .      # lint
-ruff format .     # format
-```
-
-## Layout
-
-| Path | Purpose |
+| Command | What it does |
 | --- | --- |
-| `src/pyutils/cli.py` | Typer app, argument parsing, pretty output |
-| `src/pyutils/dataset.py` | Pure scanning logic (no printing, fully testable) |
-| `tests/` | pytest suite for the logic layer |
+| `raven summary [PATH]` | Folders, files, total size, per-extension breakdown, largest files. |
+| `raven tree [PATH]` | Folder structure with per-folder file counts and sizes. |
+| `raven files [PATH]` | Files matching your filters, biggest first. |
+| `raven duplicates [PATH]` | Byte-identical files and the space they waste. |
 
-## Adding a new tool
+```bash
+raven summary ./data --top 15
+raven tree ./data --depth 2
+raven files ./data --images-only --min-size 2MB
+raven duplicates ./data --images-only
+```
 
-1. Put the logic in a new module next to `dataset.py` — plain functions, no `print`.
-2. Add a `typer.Typer()` sub-app in `cli.py` and register it with `app.add_typer(...)`.
-3. Cover the logic with tests in `tests/`.
+Common filters: `--ext "jpg,png"`, `--images-only`, `--min-size 500kb`.
+Run `raven <command> --help` for the full option list.
+
+## Documentation
+
+- [Command reference](docs/commands.md) — every flag, every convention, exit codes
+- [Architecture](docs/architecture.md) — how the code is layered
+- [Development](docs/development.md) — setup, tests, adding a command
+- [Roadmap](docs/roadmap.md) — what's planned
+
+## License
+
+MIT — see [LICENSE](LICENSE).

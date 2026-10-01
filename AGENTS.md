@@ -1,31 +1,37 @@
 # AGENTS.md
 
 ## Project
-`pyutils` — small, dependency-light Python CLI tools for everyday dataset/file chores.
-Entry point: `pyutils` → `pyutils.cli:main` (see `pyproject.toml`).
+`ravenkit` — a growing kit of dataset-inspection CLIs: count files, sizes, formats
+and folders in a directory tree. Works on any folder; built for dataset work
+(images especially).
+Distribution `ravenkit` · import `ravenkit` · CLI `raven` (→ `ravenkit.cli:main`).
+
+> This file is an index, not a manual. Detail lives in `docs/`.
 
 ## Layout
-- `src/pyutils/cli.py` — Typer app. Thin: parse args, render, exit.
-- `src/pyutils/dataset.py` — pure scan logic (`scan_dataset`, `build_tree`, `find_duplicates`).
-- `tests/` — pytest tests for the logic layer.
+- `src/ravenkit/cli.py` — Typer app; parse, render, exit.
+- `src/ravenkit/dataset.py` — pure scan logic.
+- `tests/` — pytest for the logic layer.
+- `docs/` — detailed guidance (see below).
 
 ## Rules
 - Keep logic out of the CLI: add pure functions to a module, not to `cli.py`.
-- Never use `print()`; use the shared `rich` `console` from `cli.py`.
-- Target Python 3.10+; use modern syntax (`list[str]`, `str | None`) since `from __future__ import annotations` is on.
+- Never use `print()`; use the shared `rich` `console` in `cli.py`.
+- Target Python 3.10+; modern syntax (`list[str]`, `str | None`).
 - Every new helper needs a test in `tests/`.
 - Keep dependencies minimal; prefer the stdlib.
 
 ## Commands
 ```bash
-pip install -e ".[dev]"                  # install (editable, with dev extras)
-pyutils dataset summary <path>           # run
-python -m pyutils dataset tree <path>    # run without installing the script
-pytest                                   # test
-ruff check . && ruff format .            # lint + format
+pip install -e ".[dev]"
+raven summary <path>
+python -m ravenkit summary <path>
+pytest
+ruff check . && ruff format .
 ```
 
-## CLI conventions
-- Folder arguments expand `~` and must exist, otherwise exit code 1 with a clear message.
-- Accept `--ext "jpg,png"` (comma separated) and `--images-only` for filtering.
-- Human-readable sizes via `dataset.human_size`; parse input sizes via `dataset.parse_size`.
+## Where to look next
+- `docs/commands.md` — CLI reference and conventions
+- `docs/architecture.md` — layering rules and shared helpers
+- `docs/development.md` — setup, testing, adding a command
+- `docs/roadmap.md` — planned tools and the phase plan
