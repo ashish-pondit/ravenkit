@@ -35,4 +35,4 @@ moves detail out of `AGENTS.md` into this folder.
 | 1 | Rename the package to `ravenkit`, the CLI to `raven`, flatten the command surface, add the MIT `LICENSE` and a CLI smoke test. | ✅ done |
 | 2 | Write `docs/` (`commands`, `architecture`, `development`, `roadmap`) by extracting detail from the old `README.md` and `AGENTS.md`. | ✅ done |
 | 3 | Slim `AGENTS.md` to an index and `README.md` to a pitch, both pointing here. | ✅ done |
-| 4 | End-to-end verification on a fresh install and update the project notes. | 🔄 in progress |
+| 4 | End-to-end verification on a fresh install and update the project notes. | ✅ done |

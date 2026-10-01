@@ -31,3 +31,18 @@ def test_summary_on_folder(tmp_path: Path) -> None:
     result = runner.invoke(app, ["summary", str(tmp_path)])
     assert result.exit_code == 0
     assert "Dataset" in result.stdout
+
+
+def test_missing_path_is_an_invalid_value(tmp_path: Path) -> None:
+    result = runner.invoke(app, ["summary", str(tmp_path / "nope")])
+    assert result.exit_code == 2
+
+
+def test_unknown_sort_is_a_runtime_error(tmp_path: Path) -> None:
+    result = runner.invoke(app, ["files", str(tmp_path), "--sort", "bogus"])
+    assert result.exit_code == 1
+
+
+def test_bad_min_size_is_a_runtime_error(tmp_path: Path) -> None:
+    result = runner.invoke(app, ["files", str(tmp_path), "--min-size", "5xb"])
+    assert result.exit_code == 1
